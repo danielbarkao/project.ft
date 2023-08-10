@@ -1,0 +1,25 @@
+---
+- name: Install Jenkins
+  hosts: all
+  become: true
+  tasks:
+    - name: Install Docker
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+        update_cache: yes
+  
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+        enabled: yes
+  
+    - name: Install Jenkins using Docker
+      docker_container:
+        name: jenkins
+        image: jenkins/jenkins:lts
+        ports:
+          - "8080:8080"
+        restart_policy: unless-stopped
